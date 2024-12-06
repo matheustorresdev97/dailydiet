@@ -1,4 +1,5 @@
 import "@/styles/global.css"
+import { StatusBar } from "expo-status-bar"
 import { Slot } from "expo-router"
 import {
     useFonts,
@@ -7,6 +8,7 @@ import {
 } from '@expo-google-fonts/nunito-sans'
 
 import { Loading } from "@/components/loading"
+
 
 export default function RootLayout() {
     const [fontsLoaded] = useFonts({
@@ -20,6 +22,7 @@ export default function RootLayout() {
 
     return (
         <>
+                <StatusBar style="dark" backgroundColor="transparent" translucent />
             <Slot />
         </>
     )
