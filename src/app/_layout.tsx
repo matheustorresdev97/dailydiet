@@ -5,7 +5,8 @@ import {
     NunitoSans_400Regular,
     NunitoSans_700Bold,
 } from '@expo-google-fonts/nunito-sans'
-import { ActivityIndicator } from "react-native"
+
+import { Loading } from "@/components/loading"
 
 export default function RootLayout() {
     const [fontsLoaded] = useFonts({
@@ -14,7 +15,7 @@ export default function RootLayout() {
     })
 
     if (!fontsLoaded) {
-        return <ActivityIndicator />
+        return <Loading />
     }
 
     return (
