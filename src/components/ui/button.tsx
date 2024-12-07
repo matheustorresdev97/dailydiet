@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Pressable, Text } from 'react-native';
 import clsx from 'clsx';
-import { styled } from 'nativewind';
 
 type ButtonVariant = 'primary' | 'secondary';
 
@@ -13,7 +12,7 @@ function Button({ variant = 'primary', className, ...rest }: ButtonProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   const containerClasses = clsx(
-    'flex-1 min-h-[50px] max-h-[50px] w-full px-6 flex items-center justify-center gap-3 rounded-lg',
+    'h-[50px] w-full flex-row px-6 items-center justify-center gap-3 rounded-lg',
     {
       'bg-gray-900': variant === 'primary' && !isFocused,
       'bg-gray-950': variant === 'primary' && isFocused,

@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import DailyDietLogo from '@/assets/daily-diet-logo.svg'
@@ -7,9 +7,10 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { Profile } from "@/components/ui/profile";
 import CardPercent from "@/components/card-percent";
 import { Button } from "@/components/ui/button";
+import { DayList } from "@/components/day-list";
 
 const MEALS_BY_DATE = {
-    '2023-02-08': [
+    '2025-02-08': [
         {
             id: '1',
             name: 'Refeição 1',
@@ -32,7 +33,7 @@ const MEALS_BY_DATE = {
             isInDiet: true,
         },
     ],
-    '2023-02-09': [
+    '2025-02-09': [
         {
             id: '4',
             name: 'Refeição 4',
@@ -69,13 +70,27 @@ export default function Index() {
             <CardPercent />
 
             <View className="flex-1 gap-8">
-                <View className="w-full mb-8 gap-2">
+                <View className="w-full justify-center gap-2">
                     <Text className="text-gray-950 font-regular text-base leading-5">Refeições</Text>
                     <Button>
                         <AntDesign name="plus" size={18} color="white" />
                         <Button.Title>Nova refeição</Button.Title>
                     </Button>
                 </View>
+
+
+                <FlatList
+                    data={Object.entries(MEALS_BY_DATE)}
+                    keyExtractor={([date, meals]) => date}
+                    renderItem={({ item: [date, meals] }) => (
+                        <DayList data={{ date, meals }} />
+                    )}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        gap: 32,
+                        paddingBottom: 100,
+                    }}
+                />
             </View>
         </SafeAreaView>
     )
