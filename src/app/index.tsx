@@ -1,99 +1,36 @@
-import { useState } from "react";
-import { KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from "react-native";
-import { dateApplyMask } from "@/utils/date-apply-mask";
-import { hourApplyMask } from "@/utils/hour-apply-mask";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toogle";
-import { colors } from "@/styles/colors";
-import { Feather } from "@expo/vector-icons";
+import { Text, View } from "react-native"
+import FeedbackPositive from '@/assets/img-feedback-positive.svg'
+import FeedbackNegative from '@/assets/img-feedback-negative.svg'
+import { Button } from "@/components/ui/button"
 
 
-
-
-const keyboardAvoidingBehavior =
-    Platform.OS === 'android' ? 'height' : 'position'
-
-export default function NewMeal() {
-    const [date, setDate] = useState('')
-    const [time, setTime] = useState('')
-    const [isInDiet, setIsInDiet] = useState(true)
-
-    function applyDateMask(value: string) {
-        const onlyNumbers = value.replace(/\D/g, '')
-        if (onlyNumbers.length === 8) {
-            const parsedDate = dateApplyMask(onlyNumbers)
-            return setDate(parsedDate)
-        }
-        if (onlyNumbers.length < 8) {
-            return setDate(onlyNumbers)
-        }
-    }
-    function applyHourMask(value: string) {
-        const onlyNumbers = value.replace(/\D/g, '')
-        if (onlyNumbers.length === 4) {
-            const parsedHour = hourApplyMask(onlyNumbers)
-            setTime(parsedHour)
-        }
-        if (onlyNumbers.length < 4) {
-            setTime(onlyNumbers)
-        }
-    }
+export default function Feedback() {
+    const isInDiet = true
 
     return (
-        <View className="flex-1">
-            <View className="relative w-full h-32 items-center justify-center bg-gray-200">
-                <TouchableOpacity className="absolute top-14 left-6" activeOpacity={0.7}>
-                    <Feather
-                        name="arrow-left"
-                        size={24}
-                        color={colors.gray[900]}
-                    />
-                </TouchableOpacity>
-                <Text className="text-gray-950 font-bold text-lg leading-6">Nova refeição</Text>
+        <View className="flex-1 justify-center items-center gap-10 bg-gray-50">
+            <View className="items-center justify-center max-w-[350px] gap-2">
+                <Text className={`text-center font-bold textxl leading-8  ${isInDiet ? 'text-green-500' : 'text-red-600'}`}>
+                    {isInDiet ? 'Continue assim!' : 'Que pena!'}
+                </Text>
+                <Text className="text-center text-gray-900 font-regular text-base leading-5">
+                    {isInDiet ? (
+                        <>
+                            Você continua <Text className="text-center text-gray-900 font-bold font-base leading-5">dentro da dieta</Text>.
+                            Muito bem!
+                        </>
+                    ) : (
+                        <>
+                            Você <Text className="text-center text-gray-900 font-bold font-base leading-5">saiu da dieta</Text> dessa vez,
+                            mas continue se esforçando e não desista!
+                        </>
+                    )}
+                </Text>
             </View>
-            <View className="flex-1 bg-gray-50 justify-between mt-[-32px] py-10 px-6 rounded-l-2xl rounded-r-2xl rounded-b-none">
-
-                <KeyboardAvoidingView
-                    style={{ flex: 1 }}
-                    behavior={keyboardAvoidingBehavior}
-                >
-                    <View className="gap-6">
-                        <Input label="Nome" />
-                        <Input
-                            label="Descrição"
-                            style={{ height: 142 }}
-                            multiline
-                            numberOfLines={4}
-                            textAlignVertical="top"
-                        />
-                        <View className="flex-row w-full items-center gap-5">
-                            <Input label="Data" className="flex-1" value={date} onChangeText={applyDateMask} />
-                            <Input label="Hora" className="flex-1" value={time} onChangeText={applyHourMask} />
-                        </View>
-                        <View className="gap-2">
-                            <Text className="text-gray-900 font-bold text-sm leading-4">Esta dentro da dieta?</Text>
-                            <View style={{ flexDirection: 'row', gap: 8 }}>
-                                <Toggle
-                                    title="Sim"
-                                    isChecked={isInDiet}
-                                    onPress={() => setIsInDiet(true)}
-                                />
-                                <Toggle
-                                    title="Nao"
-                                    variant="secondary"
-                                    isChecked={!isInDiet}
-                                    onPress={() => setIsInDiet(false)}
-                                />
-                            </View>
-                        </View>
-                    </View>
-                </KeyboardAvoidingView>
-                <Button>
-                    <Button.Title>Cadastrar refeição</Button.Title>
-                </Button>
-            </View>
+            {isInDiet ? <FeedbackPositive /> : <FeedbackNegative />}
+            <Button style={{ width: 'auto' }}>
+                <Button.Title>Ir para a página inicial</Button.Title>
+            </Button>
         </View>
     )
 }
