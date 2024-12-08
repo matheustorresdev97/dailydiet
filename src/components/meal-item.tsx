@@ -17,7 +17,7 @@ export function MealItem({ meal }: MealItemProps) {
             <View className="w-px h-full bg-gray-300" />
 
 
-            <Text className="flex-1 text-gray-900 font-regular text-base leading-[20px]">
+            <Text numberOfLines={1} className="flex-1 text-gray-900 font-regular text-base leading-[20px]">
                 {meal.name}
             </Text>
 

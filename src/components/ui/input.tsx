@@ -20,7 +20,7 @@ export function Input({
     const [isFocused, setFocused] = useState(false);
 
     return (
-        <View className={`w-fullflex flex-col gap-1 ${className}`}>
+        <View className={`w-full flex flex-col gap-1 ${className}`}>
             {label && (
                 <Text className="text-gray-900 font-bold text-sm leading-[18px]">
                     {label}

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from "react-native";
+import { dateApplyMask } from "@/utils/date-apply-mask";
+import { hourApplyMask } from "@/utils/hour-apply-mask";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,11 +11,35 @@ import { Feather } from "@expo/vector-icons";
 
 
 
+
 const keyboardAvoidingBehavior =
     Platform.OS === 'android' ? 'height' : 'position'
 
 export default function NewMeal() {
+    const [date, setDate] = useState('')
+    const [time, setTime] = useState('')
     const [isInDiet, setIsInDiet] = useState(true)
+
+    function applyDateMask(value: string) {
+        const onlyNumbers = value.replace(/\D/g, '')
+        if (onlyNumbers.length === 8) {
+            const parsedDate = dateApplyMask(onlyNumbers)
+            return setDate(parsedDate)
+        }
+        if (onlyNumbers.length < 8) {
+            return setDate(onlyNumbers)
+        }
+    }
+    function applyHourMask(value: string) {
+        const onlyNumbers = value.replace(/\D/g, '')
+        if (onlyNumbers.length === 4) {
+            const parsedHour = hourApplyMask(onlyNumbers)
+            setTime(parsedHour)
+        }
+        if (onlyNumbers.length < 4) {
+            setTime(onlyNumbers)
+        }
+    }
 
     return (
         <View className="flex-1">
@@ -37,14 +63,14 @@ export default function NewMeal() {
                         <Input label="Nome" />
                         <Input
                             label="Descrição"
-                            style={{ height: 120 }}
+                            style={{ height: 142 }}
                             multiline
                             numberOfLines={4}
                             textAlignVertical="top"
                         />
-                         <View className="flex-row w-full items-center justify-center">
-                         <Input label="Data" className="flex-1 mr-2" />
-                         <Input label="Hora" className="flex-1 ml-2" />
+                        <View className="flex-row w-full items-center gap-5">
+                            <Input label="Data" className="flex-1" value={date} onChangeText={applyDateMask} />
+                            <Input label="Hora" className="flex-1" value={time} onChangeText={applyHourMask} />
                         </View>
                         <View className="gap-2">
                             <Text className="text-gray-900 font-bold text-sm leading-4">Esta dentro da dieta?</Text>
