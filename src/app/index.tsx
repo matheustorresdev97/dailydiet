@@ -1,24 +1,22 @@
-import { Text, View } from "react-native";
-import { CardStatistics } from "@/components/card-statistics";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { CardContent } from "@/components/card-content";
+import { colors } from "@/styles/colors";
+import { Feather } from "@expo/vector-icons";
+import { Text, TouchableOpacity, View } from "react-native";
 
-export default function Statistics() {
+export default function NewMeal() {
     return (
         <View className="flex-1">
-            <CardStatistics />
+            <View className="relative w-full h-32 items-center justify-center bg-gray-200">
+                <TouchableOpacity className="absolute top-14 left-6" activeOpacity={0.7}>
+                    <Feather
+                        name="arrow-left"
+                        size={24}
+                        color={colors.gray[900]}
+                    />
+                </TouchableOpacity>
+                <Text className="text-gray-950 font-bold text-lg leading-6">Nova refeição</Text>
+            </View>
+            <View className="flex-1 bg-gray-50 justify-between mt-[-32px] py-10 px-6 rounded-l-2xl rounded-r-2xl rounded-b-none">
 
-            <View className=" bg-gray-50 gap-6 mt-[-32px] my-8 px-6 rounded-l-2xl rounded-r-2xl rounded-b-none">
-                <Text className="text-center text-gray-950 font-bold text-sm leading-4 pt-8">Estatísticas gerais</Text>
-                <View className="flex-col gap-3">
-                    <CardContent color="gray" number={22} description="melhor sequencia de pratos dentro da dieta" />
-                    <CardContent color="gray" number={109} description="refeições registradas" />
-
-                    <View className="flex-row gap-3">
-                        <CardContent className="flex-1" color="green" number={99} description="refeições dentro da dieta" />
-                        <CardContent className="flex-1" color="red" number={10} description="refeições fora da dieta" />
-                    </View>
-                </View>
             </View>
         </View>
     )

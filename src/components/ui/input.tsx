@@ -11,7 +11,7 @@ export function Input({ label, inputRef, className, ...rest }: InputProps) {
     const [isFocused, setFocused] = useState(false);
 
     const inputContainerClasses = clsx(
-        'h-12 px-4 flex items-center gap-2 rounded-lg border text-gray-950 text-base leading-5',
+        'min-h-12 py-2.5 px-4 align-top  rounded-lg border text-gray-950 text-base leading-5',
         {
             'border-gray-600': isFocused,
             'border-gray-200': !isFocused,
@@ -22,7 +22,7 @@ export function Input({ label, inputRef, className, ...rest }: InputProps) {
     const labelClasses = 'text-gray-900 font-bold text-sm leading-[18px]';
 
     return (
-        <View className='flex-1 max-h-[70px] flex-col gap-1'>
+        <View className='flex-1 gap-1'>
             {label && <label className={labelClasses}>{label}</label>}
             <input
                 ref={inputRef}
