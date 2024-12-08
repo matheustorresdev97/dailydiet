@@ -1,19 +1,20 @@
+import { Pressable, PressableProps, Text, View } from 'react-native';
 import clsx from 'clsx';
-import { Pressable, Text, View } from 'react-native';
 
 type ToggleVariant = 'primary' | 'secondary';
 
-type ToggleProps = React.ComponentProps<'button'> & {
+type ToggleProps = PressableProps & {
     variant?: ToggleVariant;
     isChecked?: boolean;
     title: string;
+    className?: string; // Para estilização adicional
 };
 
 export function Toggle({
     variant = 'primary',
     isChecked = false,
     title,
-    className,
+    className = '',
     ...rest
 }: ToggleProps) {
     const containerClasses = clsx(
