@@ -17,5 +17,6 @@ export const colors = {
         100: '#F4E6E7',
         300: '#F3BABD',
         600: '#BF3B44',
-    }
+    },
+    modal: 'rgba(0, 0, 0, 0.5)',
 }

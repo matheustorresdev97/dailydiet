@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Text, TouchableOpacity, View } from "react-native";
 import dayjs from "dayjs";
 import { MealProps } from "@/@types/meal";
@@ -5,10 +6,20 @@ import { colors } from "@/styles/colors";
 import { Feather } from "@expo/vector-icons";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Button } from "@/components/ui/button";
+import { ReusableModal } from '@/components/modal';
 
 
 
 export default function MealDetails() {
+    const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
+
+    function openDeleteModal() {
+        setIsDeleteModalVisible(true)
+    }
+    function closeDeleteModal() {
+        setIsDeleteModalVisible(false)
+    }
+
     const mealData: MealProps = {
         id: '1',
         name: 'Sanduíche',
@@ -54,12 +65,36 @@ export default function MealDetails() {
                         <Ionicons name="pencil" size={18} color="white" />
                         <Button.Title>Editar refeição</Button.Title>
                     </Button>
-                    <Button variant="secondary">
+                    <Button variant="secondary" onPress={openDeleteModal}>
                         <Feather name="trash" size={18} color={colors.gray[950]} />
                         <Button.Title variant="secondary">Excluir refeição</Button.Title>
                     </Button>
                 </View>
             </View>
+
+            <ReusableModal
+                isVisible={isDeleteModalVisible}
+                onClose={closeDeleteModal}
+            >
+                <Text className='text-center mb-8 text-gray-900 font-bold text-lg leading-6'>
+                    Deseja realmente excluir o registro da refeição?
+                </Text>
+                <View className='flex-row gap3'>
+                    <Button
+                        variant="secondary"
+                        onPress={closeDeleteModal}
+                        className='flex-1'
+                    >
+                        <Button.Title variant="secondary">Cancelar</Button.Title>
+                    </Button>
+                    <Button
+                        onPress={() => console.log('delete button pressed')}
+                        className='flex-1'
+                    >
+                        <Button.Title>Sim, excluir</Button.Title>
+                    </Button>
+                </View>
+            </ReusableModal>
         </View>
     )
 }
