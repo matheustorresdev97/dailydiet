@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toogle";
 import { colors } from "@/styles/colors";
 import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 
 const keyboardAvoidingBehavior =
@@ -16,7 +17,18 @@ const keyboardAvoidingBehavior =
 export default function NewMeal() {
     const [date, setDate] = useState('')
     const [time, setTime] = useState('')
-    const [isInDiet, setIsInDiet] = useState(true)
+    const [isInDiet, setIsInDiet] = useState<boolean | null>(null)
+
+    const router = useRouter();
+
+    function handleGoBack() {
+        router.back()
+    }
+
+    function handleFeedback() {
+        if (isInDiet === null) return;
+        router.push(`/feedback?isInDiet=${isInDiet}`);
+    }
 
     function applyDateMask(value: string) {
         const onlyNumbers = value.replace(/\D/g, '')
@@ -39,10 +51,15 @@ export default function NewMeal() {
         }
     }
 
+    function handleCreateMeal() {
+        // TODO: logica para criar refeição
+        handleFeedback()
+    }
+
     return (
         <View className="flex-1">
             <View className="relative w-full h-32 items-center justify-center bg-gray-200">
-                <TouchableOpacity className="absolute top-14 left-6" activeOpacity={0.7}>
+                <TouchableOpacity className="absolute top-14 left-6" activeOpacity={0.7} onPress={handleGoBack}>
                     <Feather
                         name="arrow-left"
                         size={24}
@@ -75,20 +92,20 @@ export default function NewMeal() {
                             <View style={{ flexDirection: 'row', gap: 8 }}>
                                 <Toggle
                                     title="Sim"
-                                    isChecked={isInDiet}
+                                    isChecked={isInDiet === false}
                                     onPress={() => setIsInDiet(true)}
                                 />
                                 <Toggle
                                     title="Nao"
                                     variant="secondary"
-                                    isChecked={!isInDiet}
+                                    isChecked={isInDiet === false}
                                     onPress={() => setIsInDiet(false)}
                                 />
                             </View>
                         </View>
                     </View>
                 </KeyboardAvoidingView>
-                <Button>
+                <Button onPress={handleCreateMeal}>
                     <Button.Title>Cadastrar refeição</Button.Title>
                 </Button>
             </View>

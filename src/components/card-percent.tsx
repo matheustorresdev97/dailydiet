@@ -2,11 +2,15 @@ import { Text, TouchableOpacity, View } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import clsx from "clsx";
 
+
 type PercentStyleProps = {
     variant?: "primary" | "secondary";
+    onPress: () => void;
 };
 
-export default function CardPercent({ variant = "primary" }: PercentStyleProps) {
+export default function CardPercent({ variant = "primary", onPress }: PercentStyleProps) {
+
+
     return (
         <View
             className={clsx(
@@ -20,7 +24,7 @@ export default function CardPercent({ variant = "primary" }: PercentStyleProps) 
         >
             <TouchableOpacity activeOpacity={0.7}
                 className="absolute top-2 right-2"
-                onPress={() => console.log('percent button pressed')}
+                onPress={onPress}
             >
                 <Feather
                     name="arrow-up-right"

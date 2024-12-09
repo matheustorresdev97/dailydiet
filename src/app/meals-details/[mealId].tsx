@@ -7,10 +7,15 @@ import { Feather } from "@expo/vector-icons";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Button } from "@/components/ui/button";
 import { ReusableModal } from '@/components/modal';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 
 
 export default function MealDetails() {
+    const router = useRouter();
+
+    const { mealId } = useLocalSearchParams<{ mealId: string }>();
+
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
 
     function openDeleteModal() {
@@ -18,6 +23,14 @@ export default function MealDetails() {
     }
     function closeDeleteModal() {
         setIsDeleteModalVisible(false)
+    }
+
+    function handleGoBack() {
+        router.back()
+    }
+
+    function handleEditMeal() {
+        router.push(`/edit-meal/${mealId}`)
     }
 
     const mealData: MealProps = {
@@ -29,10 +42,12 @@ export default function MealDetails() {
         isInDiet: true,
     }
 
+    console.log('MEAL_ID: ', mealId)
+
     return (
         <View className="flex-1">
             <View className={`relative w-full h-[132px] items-center justify-center ${mealData.isInDiet ? "bg-green-100" : "bg-red-100"}`}>
-                <TouchableOpacity className="absolute top-14 left-6" activeOpacity={0.7}>
+                <TouchableOpacity className="absolute top-14 left-6" activeOpacity={0.7} onPress={handleGoBack}>
                     <Feather
                         name="arrow-left"
                         size={24}
@@ -61,7 +76,7 @@ export default function MealDetails() {
                     </View>
                 </View>
                 <View className="gap-3">
-                    <Button>
+                    <Button onPress={handleEditMeal}>
                         <Ionicons name="pencil" size={18} color="white" />
                         <Button.Title>Editar refeição</Button.Title>
                     </Button>

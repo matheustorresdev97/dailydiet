@@ -4,18 +4,19 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 type CardStatisticsProps = {
     variant?: "primary" | "secondary";
+    onPress: () => void;
 };
 
-export function CardStatistics({variant='primary'}: CardStatisticsProps) {
+export function CardStatistics({ variant = 'primary', onPress }: CardStatisticsProps) {
     return (
         <View className={clsx(
             "flex-1 relative items-center justify-center min-h-[200px] max-h-[200px] gap-0.5", {
-                "bg-green-100": variant === "primary",
-                "bg-red-100": variant === "secondary",
-            }
+            "bg-green-100": variant === "primary",
+            "bg-red-100": variant === "secondary",
+        }
         )}
         >
-            <TouchableOpacity className="absolute top-14 left-6">
+            <TouchableOpacity className="absolute top-14 left-6" onPress={onPress}>
                 <Feather
                     name="arrow-left"
                     size={24}

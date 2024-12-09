@@ -1,110 +1,146 @@
-import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from 'react-native'
-import { Feather } from '@expo/vector-icons'
-import { colors } from '@/styles/colors'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { MealProps } from '@/@types/meal'
-import dayjs from 'dayjs'
-import { dateApplyMask } from '@/utils/date-apply-mask'
-import { hourApplyMask } from '@/utils/hour-apply-mask'
-import { Toggle } from '@/components/ui/toogle'
+import { FlatList, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const keyboardAvoidingBehavior =
-    Platform.OS === 'android' ? 'height' : 'position'
+import DailyDietLogo from '@/assets/daily-diet-logo.svg'
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { LinearGradient } from 'expo-linear-gradient'
+import { colors } from "@/styles/colors";
 
-const FAKE_MEAL: MealProps = {
-    id: '1',
-    name: 'Macarrão com molho de tomate',
-    description: 'Macarrão feito com molho de tomate e molho de tomate',
-    datetime: '2023-02-08T10:00:00',
-    isInDiet: false,
+import { Profile } from "@/components/ui/profile";
+import CardPercent from "@/components/card-percent";
+import { Button } from "@/components/ui/button";
+import { DayList } from "@/components/day-list";
+import { ListEmpty } from "@/components/list-empty";
+import { MealProps } from "@/@types/meal";
+import { useRouter } from "expo-router";
+
+
+const MEALS_BY_DATE: Record<string, MealProps[]> = {
+  '2025-02-08': [
+    {
+      id: '1',
+      name: 'Refeição 1',
+      description: 'Descrição da refeição 1',
+      datetime: '2025-02-08T10:00:00',
+      isInDiet: true,
+    },
+    {
+      id: '2',
+      name: 'Refeição 2',
+      description: 'Descrição da refeição 2',
+      datetime: '2025-02-08T11:00:00',
+      isInDiet: false,
+    },
+    {
+      id: '3',
+      name: 'Refeição 3',
+      description: 'Descrição da refeição 3',
+      datetime: '2025-02-08T12:00:00',
+      isInDiet: true,
+    },
+  ],
+  '2025-02-09': [
+    {
+      id: '4',
+      name: 'Refeição 4',
+      description: 'Descrição da refeição 4',
+      datetime: '2025-02-09T10:00:00',
+      isInDiet: true,
+    },
+    {
+      id: '5',
+      name: 'Refeição 5',
+      description: 'Descrição da refeição 5',
+      datetime: '2025-02-09T11:00:00',
+      isInDiet: false,
+    },
+    {
+      id: '6',
+      name: 'Refeição 6',
+      description: 'Descrição da refeição 6',
+      datetime: '2025-02-09T12:00:00',
+      isInDiet: true,
+    },
+    {
+      id: '7',
+      name: 'Refeição 7',
+      description: 'Descrição da refeição 7',
+      datetime: '2025-02-09T13:00:00',
+      isInDiet: false,
+    },
+    {
+      id: '8',
+      name: 'Refeição 8',
+      description: 'Descrição da refeição 8',
+      datetime: '2025-02-09T14:00:00',
+      isInDiet: true,
+    },
+  ],
 }
 
-export default function EditMeal() {
-    const [name, setName] = useState(FAKE_MEAL.name)
-    const [description, setDescription] = useState(FAKE_MEAL.description)
-    const [date, setDate] = useState(
-        dayjs(FAKE_MEAL.datetime).format('DD/MM/YYYY')
-    )
-    const [time, setTime] = useState(dayjs(FAKE_MEAL.datetime).format('HH:mm'))
-    const [isInDiet, setIsInDiet] = useState(FAKE_MEAL.isInDiet)
-    function applyDateMask(value: string) {
-        const onlyNumbers = value.replace(/\D/g, '')
-        if (onlyNumbers.length === 8) {
-            const parsedDate = dateApplyMask(onlyNumbers)
-            return setDate(parsedDate)
-        }
-        if (onlyNumbers.length < 8) {
-            return setDate(onlyNumbers)
-        }
-    }
-    function applyHourMask(value: string) {
-        const onlyNumbers = value.replace(/\D/g, '')
-        if (onlyNumbers.length === 4) {
-            const parsedHour = hourApplyMask(onlyNumbers)
-            setTime(parsedHour)
-        }
-        if (onlyNumbers.length < 4) {
-            setTime(onlyNumbers)
-        }
-    }
 
-    return (
-        <View className='flex-1'>
-            <View className='relative w-full h-[132px] items-center justify-center bg-gray-200'>
-                <TouchableOpacity className='absolute top-14 left-6' activeOpacity={0.7}>
-                    <Feather
-                        name="arrow-left"
-                        size={24}
-                        color={colors.gray[900]}
-                    />
-                </TouchableOpacity>
-                <Text className='text-gray-950 font-bold text-lg leading-6'>Editar refeição</Text>
-            </View>
-            <View className='flex-1 bg-gray-50 justify-between mt-[-32px] py-10 px-6 rounded-l-2xl rounded-r-2xl rounded-b-none'>
-                <KeyboardAvoidingView
-                    style={{ flex: 1 }}
-                    behavior={keyboardAvoidingBehavior}
-                >
-                    <View className='gap-6'>
-                        <Input label='Nome' value={name} onChangeText={setName} />
 
-                        <Input label='Descrição' value={description}
-                            onChangeText={setDescription}
-                            style={{ minHeight: 142 }}
-                            multiline
-                            numberOfLines={5}
-                            textAlignVertical="top" />
+export default function Index() {
+  const router = useRouter();
 
-                        <View className='w-full flex-row items-center gap-5'>
-                            <Input className='flex-1' label='Data' value={date} onChangeText={applyDateMask} />
+  function handleMealsStatistics() {
+    router.push('/statistics')
+  }
 
-                            <Input className='flex-1' label='Hora' value={time} onChangeText={applyHourMask} />
+  function handleNewMeal() {
+    router.push('/new-meal')
+  }
 
-                        </View>
-                        <View className='gap-2'>
-                            <Text className='text-gray-900 font-bold text-sm leading-4'>Esta dentro da dieta?</Text>
-                            <View className='flex-row gap-2'>
-                                <Toggle
-                                    title="Sim"
-                                    isChecked={isInDiet}
-                                    onPress={() => setIsInDiet(true)}
-                                />
-                                <Toggle
-                                    title="Nao"
-                                    variant="secondary"
-                                    isChecked={!isInDiet}
-                                    onPress={() => setIsInDiet(false)}
-                                />
-                            </View>
-                        </View>
-                    </View>
-                </KeyboardAvoidingView>
-                <Button>
-                    <Button.Title>Salvar alterações</Button.Title>
-                </Button>
-            </View>
+  return (
+    <SafeAreaView className="flex-1 pt-9 px-6 pb-0">
+      <View className="flex-row items-center justify-between mb-8">
+        <DailyDietLogo />
+        <Profile source={{ uri: 'https://github.com/matheustorresdev97.png' }} />
+      </View>
+
+      <CardPercent onPress={handleMealsStatistics} />
+
+      <View className="flex-1 gap-8">
+        <View className="w-full justify-center gap-2">
+          <Text className="text-gray-950 font-regular text-base leading-5">Refeições</Text>
+          <Button onPress={handleNewMeal}>
+            <AntDesign name="plus" size={18} color="white" />
+            <Button.Title>Nova refeição</Button.Title>
+          </Button>
         </View>
-    )
+
+
+        <FlatList
+          data={Object.entries(MEALS_BY_DATE)}
+          keyExtractor={([date, meals]) => date}
+          renderItem={({ item: [date, meals] }) => (
+            <DayList data={{ date, meals }} />
+          )}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={
+            Object.keys(MEALS_BY_DATE).length === 0
+              ? { flex: 1 }
+              : {
+                gap: 32,
+                paddingBottom: 160,
+              }
+          }
+          ListEmptyComponent={() => (
+            <ListEmpty message="Não há refeições registradas" />
+          )}
+        />
+      </View>
+      <LinearGradient
+        colors={['transparent', colors.gray[50]]}
+        pointerEvents="none"
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 160,
+        }}
+      />
+    </SafeAreaView>
+  )
 }

@@ -2,10 +2,22 @@ import { Text, View } from "react-native"
 import FeedbackPositive from '@/assets/img-feedback-positive.svg'
 import FeedbackNegative from '@/assets/img-feedback-negative.svg'
 import { Button } from "@/components/ui/button"
+import { useRouter } from "expo-router";
+import { useSearchParams } from "expo-router/build/hooks";
 
+interface FeedbackParams {
+    isInDiet?: boolean;
+}
 
 export default function Feedback() {
-    const isInDiet = true
+    const { isInDiet } = useSearchParams() as FeedbackParams;
+
+
+    const router = useRouter();
+
+    function handleGoHome() {
+        router.navigate('/')
+    }
 
     return (
         <View className="flex-1 justify-center items-center gap-10 bg-gray-50">
@@ -28,7 +40,7 @@ export default function Feedback() {
                 </Text>
             </View>
             {isInDiet ? <FeedbackPositive /> : <FeedbackNegative />}
-            <Button style={{ width: 'auto' }}>
+            <Button onPress={handleGoHome} className="w-auto">
                 <Button.Title>Ir para a página inicial</Button.Title>
             </Button>
         </View>
