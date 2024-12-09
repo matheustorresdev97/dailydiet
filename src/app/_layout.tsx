@@ -6,7 +6,7 @@ import {
     NunitoSans_400Regular,
     NunitoSans_700Bold,
 } from '@expo-google-fonts/nunito-sans'
-
+import Toast from 'react-native-toast-message'
 import { Loading } from "@/components/loading"
 
 
@@ -22,8 +22,9 @@ export default function RootLayout() {
 
     return (
         <>
-                <StatusBar style="dark" backgroundColor="transparent" translucent />
+            <StatusBar style="dark" backgroundColor="transparent" translucent />
             <Slot />
+            <Toast />
         </>
     )
 }

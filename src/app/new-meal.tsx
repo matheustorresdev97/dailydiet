@@ -2,19 +2,27 @@ import { useState } from "react";
 import { KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from "react-native";
 import { dateApplyMask } from "@/utils/date-apply-mask";
 import { hourApplyMask } from "@/utils/hour-apply-mask";
-
+import { useMealsStore } from '@/store/meals'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toggle } from "@/components/ui/toogle";
 import { colors } from "@/styles/colors";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import toast from 'react-native-toast-message'
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+dayjs.extend(customParseFormat)
 
 
 const keyboardAvoidingBehavior =
     Platform.OS === 'android' ? 'height' : 'position'
 
 export default function NewMeal() {
+    const { addMeal } = useMealsStore()
+
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
     const [date, setDate] = useState('')
     const [time, setTime] = useState('')
     const [isInDiet, setIsInDiet] = useState<boolean | null>(null)
@@ -52,8 +60,53 @@ export default function NewMeal() {
     }
 
     function handleCreateMeal() {
-        // TODO: logica para criar refeição
-        handleFeedback()
+        if (!name || !description || !date || !time || isInDiet === null) {
+            return toast.show({
+                type: 'error',
+                text1: 'Preencha todos os campos',
+            })
+        }
+
+        try {
+            const [day, month, year] = date.split('/')
+            const formattedDate = `${year}-${month}-${day}`
+            // Verificar formato da data e hora antes de usar Day.js
+            const dateRegex = /^\d{4}-\d{2}-\d{2}$/ // YYYY-MM-DD
+            const timeRegex = /^\d{2}:\d{2}$/ // HH:mm
+            if (!dateRegex.test(formattedDate) || !timeRegex.test(time)) {
+                return toast.show({
+                    type: 'error',
+                    text1: 'Data ou hora inválida',
+                })
+            }
+            const dateHourString = `${formattedDate}T${time}`
+            const isValidDate = dayjs(
+                dateHourString,
+                'YYYY-MM-DDTHH:mm',
+                true
+            ).isValid()
+            if (!isValidDate) {
+                return toast.show({
+                    type: 'error',
+                    text1: 'Data ou hora inválida',
+                })
+            }
+            const datetime = dayjs(dateHourString).format('YYYY-MM-DDTHH:mm:ss')
+            addMeal({
+                name,
+                description,
+                datetime,
+                isInDiet,
+            })
+            handleFeedback()
+        } catch (error) {
+            console.log(error)
+            return toast.show({
+                type: 'error',
+                text1: 'Ocorreu um erro ao criar a refeição',
+                text2: 'Verifique os campos e tente novamente',
+            })
+        }
     }
 
     return (
@@ -75,13 +128,15 @@ export default function NewMeal() {
                     behavior={keyboardAvoidingBehavior}
                 >
                     <View className="gap-6">
-                        <Input label="Nome" />
+                        <Input label="Nome" value={name} onChangeText={setName} />
                         <Input
                             label="Descrição"
                             style={{ height: 142 }}
                             multiline
                             numberOfLines={4}
                             textAlignVertical="top"
+                            value={description}
+                            onChangeText={setDescription}
                         />
                         <View className="flex-row w-full items-center gap-5">
                             <Input label="Data" className="flex-1" value={date} onChangeText={applyDateMask} />

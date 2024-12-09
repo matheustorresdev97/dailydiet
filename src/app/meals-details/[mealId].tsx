@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Text, TouchableOpacity, View } from "react-native";
 import dayjs from "dayjs";
 import { MealProps } from "@/@types/meal";
@@ -7,15 +7,17 @@ import { Feather } from "@expo/vector-icons";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Button } from "@/components/ui/button";
 import { ReusableModal } from '@/components/modal';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useMealsStore } from '@/store/meals'
 
 
 export default function MealDetails() {
+    const { getMealById } = useMealsStore()
     const router = useRouter();
 
     const { mealId } = useLocalSearchParams<{ mealId: string }>();
 
+    const [mealData, setMealData] = useState<MealProps>({} as MealProps)
     const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false)
 
     function openDeleteModal() {
@@ -33,16 +35,15 @@ export default function MealDetails() {
         router.push(`/edit-meal/${mealId}`)
     }
 
-    const mealData: MealProps = {
-        id: '1',
-        name: 'Sanduíche',
-        description:
-            'Sanduíche de pão integral com atum e salada de alface e tomate',
-        datetime: '2023-02-08T10:00:00',
-        isInDiet: true,
-    }
-
-    console.log('MEAL_ID: ', mealId)
+    useFocusEffect(
+        useCallback(() => {
+            const meal = getMealById(mealId)
+            if (!meal) {
+                return router.navigate('/')
+            }
+            setMealData(meal)
+        }, [])
+    )
 
     return (
         <View className="flex-1">

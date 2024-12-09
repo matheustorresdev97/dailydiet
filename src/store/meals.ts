@@ -1,9 +1,11 @@
 import { create } from 'zustand'
-import type { MealProps, MealsByDateProps } from '@/@types/meal'
+import { createId } from '@paralleldrive/cuid2'
 import dayjs from 'dayjs'
+import type { MealProps, MealsByDateProps } from '@/@types/meal'
+
 type MealsStore = {
     mealsByDate: MealsByDateProps
-    addMeal: (meal: MealProps) => void
+    addMeal: (meal: Omit<MealProps, 'id'>) => void
     getMealById: (mealId: string) => MealProps | undefined
     // updateMeal: (meal: MealDTO) => void
     removeMeal: (date: string, mealId: string) => void
@@ -78,7 +80,13 @@ export const useMealsStore = create<MealsStore>((set, get) => ({
             return {
                 mealsByDate: {
                     ...state.mealsByDate,
-                    [date]: [...state.mealsByDate[date], meal],
+                    [date]: [
+                        ...(state.mealsByDate[date] || []),
+                        {
+                            id: createId(),
+                            ...meal,
+                        },
+                    ],
                 },
             }
         }),
