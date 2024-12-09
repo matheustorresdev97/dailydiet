@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Text, View } from "react-native";
 import { MealProps } from "@/@types/meal";
+import dayjs from "dayjs";
 
 type MealItemProps = {
     meal: MealProps;
@@ -9,8 +10,8 @@ type MealItemProps = {
 export function MealItem({ meal }: MealItemProps) {
     return (
         <View className="flex-row items-center gap-3 px-4 py-[14px] rounded-md border border-gray-200">
-            <Text className="text-gray-950 font-regular text-xs leading-[16px]">
-                {new Date(meal.datetime).toLocaleTimeString("pt-BR")}
+            <Text className="text-gray-950 font-bold text-xs leading-[16px]">
+                {dayjs(meal.datetime).format('HH:mm')}
             </Text>
 
 

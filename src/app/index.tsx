@@ -1,64 +1,109 @@
-import { Text, TouchableOpacity, View } from "react-native";
-import dayjs from "dayjs";
-import { MealProps } from "@/@types/meal";
-import { colors } from "@/styles/colors";
-import { Feather } from "@expo/vector-icons";
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { Button } from "@/components/ui/button";
+import { useState } from 'react'
+import { KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from 'react-native'
+import { Feather } from '@expo/vector-icons'
+import { colors } from '@/styles/colors'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { MealProps } from '@/@types/meal'
+import dayjs from 'dayjs'
+import { dateApplyMask } from '@/utils/date-apply-mask'
+import { hourApplyMask } from '@/utils/hour-apply-mask'
+import { Toggle } from '@/components/ui/toogle'
 
+const keyboardAvoidingBehavior =
+    Platform.OS === 'android' ? 'height' : 'position'
 
+const FAKE_MEAL: MealProps = {
+    id: '1',
+    name: 'Macarrão com molho de tomate',
+    description: 'Macarrão feito com molho de tomate e molho de tomate',
+    datetime: '2023-02-08T10:00:00',
+    isInDiet: false,
+}
 
-export default function MealDetails() {
-    const mealData: MealProps = {
-        id: '1',
-        name: 'Sanduíche',
-        description:
-            'Sanduíche de pão integral com atum e salada de alface e tomate',
-        datetime: '2023-02-08T10:00:00',
-        isInDiet: true,
+export default function EditMeal() {
+    const [name, setName] = useState(FAKE_MEAL.name)
+    const [description, setDescription] = useState(FAKE_MEAL.description)
+    const [date, setDate] = useState(
+        dayjs(FAKE_MEAL.datetime).format('DD/MM/YYYY')
+    )
+    const [time, setTime] = useState(dayjs(FAKE_MEAL.datetime).format('HH:mm'))
+    const [isInDiet, setIsInDiet] = useState(FAKE_MEAL.isInDiet)
+    function applyDateMask(value: string) {
+        const onlyNumbers = value.replace(/\D/g, '')
+        if (onlyNumbers.length === 8) {
+            const parsedDate = dateApplyMask(onlyNumbers)
+            return setDate(parsedDate)
+        }
+        if (onlyNumbers.length < 8) {
+            return setDate(onlyNumbers)
+        }
+    }
+    function applyHourMask(value: string) {
+        const onlyNumbers = value.replace(/\D/g, '')
+        if (onlyNumbers.length === 4) {
+            const parsedHour = hourApplyMask(onlyNumbers)
+            setTime(parsedHour)
+        }
+        if (onlyNumbers.length < 4) {
+            setTime(onlyNumbers)
+        }
     }
 
     return (
-        <View className="flex-1">
-            <View className={`relative w-full h-[132px] items-center justify-center ${mealData.isInDiet ? "bg-green-100" : "bg-red-100"}`}>
-                <TouchableOpacity className="absolute top-14 left-6" activeOpacity={0.7}>
+        <View className='flex-1'>
+            <View className='relative w-full h-[132px] items-center justify-center bg-gray-200'>
+                <TouchableOpacity className='absolute top-14 left-6' activeOpacity={0.7}>
                     <Feather
                         name="arrow-left"
                         size={24}
                         color={colors.gray[900]}
                     />
                 </TouchableOpacity>
-                <Text className="text-gray-950 font-bold text-lg leading-6">Refeição</Text>
+                <Text className='text-gray-950 font-bold text-lg leading-6'>Editar refeição</Text>
             </View>
-            <View className="flex-1 bg-gray-50 justify-between mt-[-32px] py-10 px-6 rounded-l-2xl rounded-r-2xl rounded-b-none">
-                <View className="gap-6">
-                    <View className="gap-2">
-                        <Text className="text-gray-950 font-bold text-xl leading-6">{mealData.name}</Text>
-                        <Text className="text-gray-900 font-regular text-base leading-5">{mealData.description}</Text>
+            <View className='flex-1 bg-gray-50 justify-between mt-[-32px] py-10 px-6 rounded-l-2xl rounded-r-2xl rounded-b-none'>
+                <KeyboardAvoidingView
+                    style={{ flex: 1 }}
+                    behavior={keyboardAvoidingBehavior}
+                >
+                    <View className='gap-6'>
+                        <Input label='Nome' value={name} onChangeText={setName} />
+
+                        <Input label='Descrição' value={description}
+                            onChangeText={setDescription}
+                            style={{ minHeight: 142 }}
+                            multiline
+                            numberOfLines={5}
+                            textAlignVertical="top" />
+
+                        <View className='w-full flex-row items-center gap-5'>
+                            <Input className='flex-1' label='Data' value={date} onChangeText={applyDateMask} />
+
+                            <Input className='flex-1' label='Hora' value={time} onChangeText={applyHourMask} />
+
+                        </View>
+                        <View className='gap-2'>
+                            <Text className='text-gray-900 font-bold text-sm leading-4'>Esta dentro da dieta?</Text>
+                            <View className='flex-row gap-2'>
+                                <Toggle
+                                    title="Sim"
+                                    isChecked={isInDiet}
+                                    onPress={() => setIsInDiet(true)}
+                                />
+                                <Toggle
+                                    title="Nao"
+                                    variant="secondary"
+                                    isChecked={!isInDiet}
+                                    onPress={() => setIsInDiet(false)}
+                                />
+                            </View>
+                        </View>
                     </View>
-                    <View className="gap-2">
-                        <Text className="text-gray950 font-bold text-sm leading-4">Data e hora</Text>
-                        <Text className="text-gray-900 font-regular text-base leading-5">
-                            {dayjs(mealData.datetime).format('DD/MM/YYYY[ às ]HH:mm')}
-                        </Text>
-                    </View>
-                    <View className="flex-row mr-auto items-center justify-center gap-2 py-2 px-4 rounded-full bg-gray-100">
-                        <View className={`w-2 h-2 rounded-full  ${mealData.isInDiet ? "bg-green-500" : "bg-red-600"}`} />
-                        <Text className="text-gray-950 font-regular text-sm leading-4">
-                            {mealData.isInDiet ? 'dentro da dieta' : 'fora da dieta'}
-                        </Text>
-                    </View>
-                </View>
-                <View className="gap-3">
-                    <Button>
-                        <Ionicons name="pencil" size={18} color="white" />
-                        <Button.Title>Editar refeição</Button.Title>
-                    </Button>
-                    <Button variant="secondary">
-                        <Feather name="trash" size={18} color={colors.gray[950]} />
-                        <Button.Title variant="secondary">Excluir refeição</Button.Title>
-                    </Button>
-                </View>
+                </KeyboardAvoidingView>
+                <Button>
+                    <Button.Title>Salvar alterações</Button.Title>
+                </Button>
             </View>
         </View>
     )
