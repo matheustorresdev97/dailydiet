@@ -5,9 +5,12 @@ import { Text, TouchableOpacity, View } from "react-native";
 type CardStatisticsProps = {
     variant?: "primary" | "secondary";
     onPress: () => void;
+    mealsInDietPercent: number;
 };
 
-export function CardStatistics({ variant = 'primary', onPress }: CardStatisticsProps) {
+export function CardStatistics({ variant = 'primary', mealsInDietPercent, onPress }: CardStatisticsProps) {
+
+    
     return (
         <View className={clsx(
             "flex-1 relative items-center justify-center min-h-[200px] max-h-[200px] gap-0.5", {
@@ -26,7 +29,7 @@ export function CardStatistics({ variant = 'primary', onPress }: CardStatisticsP
                     })}
                 />
             </TouchableOpacity>
-            <Text className="font-regular text-2xl text-gray-950 leading-10">90,86%</Text>
+            <Text className="font-regular text-2xl text-gray-950 leading-10">{mealsInDietPercent.toFixed(2)}%</Text>
             <Text className="font-regular text-sm text-gray-900 leading-5">das refeições dentro da dieta</Text>
         </View>
     )
