@@ -1,54 +1,131 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, Platform, Text, TouchableOpacity, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { colors } from '@/styles/colors'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { MealProps } from '@/@types/meal'
+import toast from 'react-native-toast-message'
 import dayjs from 'dayjs'
 import { dateApplyMask } from '@/utils/date-apply-mask'
 import { hourApplyMask } from '@/utils/hour-apply-mask'
 import { Toggle } from '@/components/ui/toogle'
+import { useLocalSearchParams, useRouter } from 'expo-router'
+import { useMealsStore } from '@/store/meals'
+import { MealProps } from '@/@types/meal'
 
 const keyboardAvoidingBehavior =
     Platform.OS === 'android' ? 'height' : 'position'
 
-const FAKE_MEAL: MealProps = {
-    id: '1',
-    name: 'Macarrão com molho de tomate',
-    description: 'Macarrão feito com molho de tomate e molho de tomate',
-    datetime: '2023-02-08T10:00:00',
-    isInDiet: false,
-}
+
 
 export default function EditMeal() {
-    const [name, setName] = useState(FAKE_MEAL.name)
-    const [description, setDescription] = useState(FAKE_MEAL.description)
-    const [date, setDate] = useState(
-        dayjs(FAKE_MEAL.datetime).format('DD/MM/YYYY')
-    )
-    const [time, setTime] = useState(dayjs(FAKE_MEAL.datetime).format('HH:mm'))
-    const [isInDiet, setIsInDiet] = useState(FAKE_MEAL.isInDiet)
+    const { getMealById, updateMeal } = useMealsStore()
+    const { mealId } = useLocalSearchParams<{ mealId: string }>();
+    const router = useRouter();
+
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
+    const [date, setDate] = useState('')
+    const [time, setTime] = useState('')
+    const [isInDiet, setIsInDiet] = useState<boolean | null>(null)
+
+    function handleGoBack() {
+        router.canGoBack()
+    }
+
     function applyDateMask(value: string) {
         const onlyNumbers = value.replace(/\D/g, '')
+    
         if (onlyNumbers.length === 8) {
-            const parsedDate = dateApplyMask(onlyNumbers)
-            return setDate(parsedDate)
+          const parsedDate = dateApplyMask(onlyNumbers)
+    
+          return setDate(parsedDate)
         }
+    
         if (onlyNumbers.length < 8) {
-            return setDate(onlyNumbers)
+          return setDate(onlyNumbers)
         }
-    }
-    function applyHourMask(value: string) {
+      }
+
+      function applyHourMask(value: string) {
         const onlyNumbers = value.replace(/\D/g, '')
+    
         if (onlyNumbers.length === 4) {
-            const parsedHour = hourApplyMask(onlyNumbers)
-            setTime(parsedHour)
+          const parsedHour = hourApplyMask(onlyNumbers)
+    
+          setTime(parsedHour)
         }
+    
         if (onlyNumbers.length < 4) {
-            setTime(onlyNumbers)
+          setTime(onlyNumbers)
         }
+      }
+
+
+ function handleSaveMeal() {
+    if (!name || !description || !date || !time || isInDiet === null) {
+      return toast.show({
+        type: 'error',
+        text1: 'Preencha todos os campos',
+      })
     }
+
+    try {
+      const [day, month, year] = date.split('/')
+      const formattedDate = `${year}-${month}-${day}`
+
+      const dateHourString = `${formattedDate}T${time}`
+
+      const isValidDate = dayjs(
+        dateHourString,
+        'YYYY-MM-DDTHH:mm',
+        true
+      ).isValid()
+
+      if (!isValidDate) {
+        return toast.show({
+          type: 'error',
+          text1: 'Data ou hora inválida',
+        })
+      }
+
+      const datetime = dayjs(dateHourString).format('YYYY-MM-DDTHH:mm:ss')
+
+      const updatedMeal: MealProps = {
+        id: mealId,
+        name,
+        description,
+        datetime,
+        isInDiet,
+      }
+
+      updateMeal(updatedMeal)
+
+      handleGoBack()
+    } catch (error) {
+      console.log(error)
+
+      return toast.show({
+        type: 'error',
+        text1: 'Erro ao atualizar refeição',
+        text2: 'verifique os dados e tente novamente',
+      })
+    }
+  }
+
+  useEffect(() => {
+    const meal = getMealById(mealId)
+
+    if (!meal) {
+      return handleGoBack()
+    }
+
+    setName(meal.name)
+    setDescription(meal.description)
+    setDate(dayjs(meal.datetime).format('DD/MM/YYYY'))
+    setTime(dayjs(meal.datetime).format('HH:mm'))
+    setIsInDiet(meal.isInDiet)
+  }, [mealId])
 
     return (
         <View className='flex-1'>
@@ -88,20 +165,20 @@ export default function EditMeal() {
                             <View className='flex-row gap-2'>
                                 <Toggle
                                     title="Sim"
-                                    isChecked={isInDiet}
+                                    isChecked={isInDiet === true}
                                     onPress={() => setIsInDiet(true)}
                                 />
                                 <Toggle
                                     title="Nao"
                                     variant="secondary"
-                                    isChecked={!isInDiet}
+                                    isChecked={isInDiet === false}
                                     onPress={() => setIsInDiet(false)}
                                 />
                             </View>
                         </View>
                     </View>
                 </KeyboardAvoidingView>
-                <Button>
+                <Button onPress={handleSaveMeal}>
                     <Button.Title>Salvar alterações</Button.Title>
                 </Button>
             </View>

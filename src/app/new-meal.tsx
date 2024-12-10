@@ -71,14 +71,7 @@ export default function NewMeal() {
             const [day, month, year] = date.split('/')
             const formattedDate = `${year}-${month}-${day}`
             // Verificar formato da data e hora antes de usar Day.js
-            const dateRegex = /^\d{4}-\d{2}-\d{2}$/ // YYYY-MM-DD
-            const timeRegex = /^\d{2}:\d{2}$/ // HH:mm
-            if (!dateRegex.test(formattedDate) || !timeRegex.test(time)) {
-                return toast.show({
-                    type: 'error',
-                    text1: 'Data ou hora inválida',
-                })
-            }
+
             const dateHourString = `${formattedDate}T${time}`
             const isValidDate = dayjs(
                 dateHourString,
