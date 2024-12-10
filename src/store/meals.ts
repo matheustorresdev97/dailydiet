@@ -165,6 +165,13 @@ export const useMealsStore = create<MealsStore>((set, get) => ({
         meal => meal.id !== mealId
       )
 
+      if (mealsByDateFiltered.length === 0) {
+        delete state.mealsByDate[date]
+        return {
+          mealsByDate: state.mealsByDate,
+        }
+      }
+
       return {
         mealsByDate: {
           ...state.mealsByDate,

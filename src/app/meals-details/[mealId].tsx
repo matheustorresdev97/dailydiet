@@ -12,7 +12,7 @@ import { useMealsStore } from '@/store/meals'
 
 
 export default function MealDetails() {
-    const { getMealById } = useMealsStore()
+    const { getMealById, removeMeal } = useMealsStore()
     const router = useRouter();
 
     const { mealId } = useLocalSearchParams<{ mealId: string }>();
@@ -33,6 +33,12 @@ export default function MealDetails() {
 
     function handleEditMeal() {
         router.push(`/edit-meal/${mealId}`)
+    }
+
+    function handleRemoveMeal() {
+        const mealDate = dayjs(mealData.datetime).format('YYYY-MM-DD')
+        removeMeal(mealDate, mealId)
+        router.navigate('/')
     }
 
     useFocusEffect(
@@ -104,7 +110,7 @@ export default function MealDetails() {
                         <Button.Title variant="secondary">Cancelar</Button.Title>
                     </Button>
                     <Button
-                        onPress={() => console.log('delete button pressed')}
+                        onPress={handleRemoveMeal}
                         className='flex-1'
                     >
                         <Button.Title>Sim, excluir</Button.Title>
