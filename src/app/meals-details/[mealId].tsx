@@ -101,7 +101,7 @@ export default function MealDetails() {
                 <Text className='text-center mb-8 text-gray-900 font-bold text-lg leading-6'>
                     Deseja realmente excluir o registro da refeição?
                 </Text>
-                <View className='flex-row gap3'>
+                <View className='flex-row gap-3'>
                     <Button
                         variant="secondary"
                         onPress={closeDeleteModal}

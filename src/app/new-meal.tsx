@@ -35,7 +35,7 @@ export default function NewMeal() {
 
     function handleFeedback() {
         if (isInDiet === null) return;
-        router.push(`/feedback?isInDiet=${isInDiet}`);
+        router.push(`/feedback/${isInDiet}`);
     }
 
     function applyDateMask(value: string) {
@@ -140,7 +140,7 @@ export default function NewMeal() {
                             <View style={{ flexDirection: 'row', gap: 8 }}>
                                 <Toggle
                                     title="Sim"
-                                    isChecked={isInDiet === false}
+                                    isChecked={isInDiet === true}
                                     onPress={() => setIsInDiet(true)}
                                 />
                                 <Toggle

@@ -6,10 +6,10 @@ import clsx from "clsx";
 type PercentStyleProps = {
     variant?: "primary" | "secondary";
     onPress: () => void;
+    mealsInDietPercent: number; 
 };
 
-export default function CardPercent({ variant = "primary", onPress }: PercentStyleProps) {
-
+export default function CardPercent({ variant = "primary", onPress, mealsInDietPercent }: PercentStyleProps) {
 
     return (
         <View
@@ -36,7 +36,7 @@ export default function CardPercent({ variant = "primary", onPress }: PercentSty
                 />
             </TouchableOpacity>
             <Text className="font-bold text-2xl text-gray-950 leading-10">
-                90,86%
+            {mealsInDietPercent ? mealsInDietPercent.toFixed(2) : 0}%
             </Text>
             <Text className="font-regular text-sm text-gray-900 leading-4">
                 das refeições dentro da dieta

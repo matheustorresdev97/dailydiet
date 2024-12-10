@@ -21,9 +21,9 @@ export function ReusableModal({ children,
       isVisible={isVisible}
       onBackdropPress={onClose}>
 
-      <View className='flex-1 bg-modal justify-center items-center'>
+      <View className='flex-1 justify-center items-center'>
 
-        <View className='z-10 mx-auto my-0 w-[90%] p-6 bg-gray-50 rounded-lg'>{children}</View>
+        <View className='z-10 mx-auto my-0 w-[100%] p-6 bg-gray-50 rounded-lg'>{children}</View>
 
       </View>
     </Modal>

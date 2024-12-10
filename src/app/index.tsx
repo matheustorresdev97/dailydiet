@@ -41,6 +41,7 @@ export default function Index() {
       <CardPercent
       variant={mealsInDietPercent > 50 ? 'primary' : 'secondary'}
        onPress={handleMealsStatistics}
+       mealsInDietPercent={mealsInDietPercent}
         />
 
       <View className="flex-1 gap-8">

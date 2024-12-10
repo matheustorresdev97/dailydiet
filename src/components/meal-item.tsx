@@ -2,14 +2,22 @@ import clsx from "clsx";
 import { Text, TouchableOpacity, View } from "react-native";
 import { MealProps } from "@/@types/meal";
 import dayjs from "dayjs";
+import { useRouter } from "expo-router";
 
 type MealItemProps = {
     meal: MealProps;
 };
 
 export function MealItem({ meal }: MealItemProps) {
+
+    const router = useRouter()
+
+    function handleMealDetails(mealId: string) {
+        router.push(`/meals-details/${mealId}`)
+      }
+
     return (
-        <TouchableOpacity className="flex-row items-center gap-3 px-4 py-[14px] rounded-md border border-gray-200">
+        <TouchableOpacity className="flex-row items-center gap-3 px-4 py-[14px] rounded-md border border-gray-200"  onPress={() => handleMealDetails(meal.id)}>
             <Text className="text-gray-950 font-bold text-xs leading-[16px]">
                 {dayjs(meal.datetime).format('HH:mm')}
             </Text>
