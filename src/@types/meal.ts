@@ -9,3 +9,10 @@ export type MealProps = {
 export type MealsByDateProps = {
     [date: string]: MealProps[]
 }
+
+export type MealsStatisticsProps = {
+    totalMeals: number
+    totalMealsInDiet: number
+    totalMealsOutDiet: number
+    bestSequenceInDiet: number
+  }

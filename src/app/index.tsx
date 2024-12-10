@@ -17,8 +17,11 @@ import { useMealsStore } from '@/store/meals'
 
 
 export default function Index() {
-  const { mealsByDate } = useMealsStore()
+  const { mealsByDate, getMealsStatistics } = useMealsStore()
   const router = useRouter();
+
+  const { totalMeals, totalMealsInDiet } = getMealsStatistics()
+  const mealsInDietPercent = (totalMealsInDiet / totalMeals) * 100
 
   function handleMealsStatistics() {
     router.push('/statistics')
@@ -35,7 +38,10 @@ export default function Index() {
         <Profile source={{ uri: 'https://github.com/matheustorresdev97.png' }} />
       </View>
 
-      <CardPercent onPress={handleMealsStatistics} />
+      <CardPercent
+      variant={mealsInDietPercent > 50 ? 'primary' : 'secondary'}
+       onPress={handleMealsStatistics}
+        />
 
       <View className="flex-1 gap-8">
         <View className="w-full justify-center gap-2">
